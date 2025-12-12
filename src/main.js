@@ -1,7 +1,7 @@
 import {render, RenderPosition} from './render.js';
 import FiltersView from './view/filter-view.js';
 import TripPresenter from './presenter/trip-presenter.js';
-import PointModel from './model.js/points-model.js';
+import PointModel from './model/points-model.js';
 
 
 import TripInfoView from './view/trip-info-view.js';
