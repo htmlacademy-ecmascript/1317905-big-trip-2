@@ -29,13 +29,14 @@ export const mockTravelDestinations =
     },
     {
       id: 'bfa5cb75-a1fe-4b77-a83c-0e528e910e04',
-      name: 'Paris',
-      description: 'Paris, the City of Light, is famous for its art, fashion, gastronomy and culture. Iconic landmarks include the Eiffel Tower, Louvre Museum, Notre-Dame Cathedral and Montmartre district. The Seine river flows through its heart.',
+      name: 'Moscow',
+      description: 'Moscow, the capital of Russia, is a powerful mix of history and modernity. The heart of the city — the Kremlin and Red Square, surrounded by St. Basil’s Cathedral, Lenin’s Mausoleum and GUM. Home to the Bolshoi Theatre, world-class museums, metro stations that look like palaces, and endless layers of history from tsars to space explorers.',
       pictures: [
-        { src: 'https://loremflickr.com/248/152?random=401', description: 'Eiffel Tower sparkling at night' },
-        { src: 'https://loremflickr.com/248/152?random=402', description: 'Louvre Museum and glass pyramid' },
-        { src: 'https://loremflickr.com/248/152?random=403', description: 'Notre-Dame Cathedral and Seine river' },
-        { src: 'https://loremflickr.com/248/152?random=404', description: 'Sacré-Cœur Basilica in Montmartre' }
+        { src: 'https://loremflickr.com/248/152?random=501', description: 'Red Square and Saint Basil’s Cathedral' },
+        { src: 'https://loremflickr.com/248/152?random=502', description: 'Kremlin and Moscow River at sunset' },
+        { src: 'https://loremflickr.com/248/152?random=503', description: 'Moscow City skyscrapers' },
+        { src: 'https://loremflickr.com/248/152?random=504', description: 'Bolshoi Theatre' },
+        { src: 'https://loremflickr.com/248/152?random=505', description: 'Sparrow Hills viewpoint' }
       ]
     }
   ];
