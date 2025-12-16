@@ -62,8 +62,8 @@ function createPhotoContainerTemplate (pictures) {
   return '';
 }
 
-function createDestinationTemplate (destination) {
-  const { description , pictures } = destination;
+function createDestinationTemplate (currentDestination) {
+  const { description , pictures } = currentDestination;
 
   if (description || pictures.length > 0) {
     return (
@@ -80,9 +80,9 @@ function createDestinationTemplate (destination) {
 }
 
 
-function createPointEditViewTemplate (point, offers, selectedOffers, destination, destinations) {
+function createPointEditViewTemplate (point, offers, selectedOffers, currentDestination, allDestinations) {
   const { id, type, dateFrom, dateTo, basePrice } = point;
-  const { name } = destination;
+  const { name } = currentDestination;
 
   const fromDate = humanizeFullDate(dateFrom);
   const toDate = humanizeFullDate(dateTo);
@@ -112,7 +112,7 @@ function createPointEditViewTemplate (point, offers, selectedOffers, destination
                     </label>
                     <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${name}" list="destination-list-${id}">
                     <datalist id="destination-list-${id}">
-                      ${destinations.map((dest) => `<option value="${dest.name}"></option>`).join('')}
+                      ${allDestinations.map((dest) => `<option value="${dest.name}"></option>`).join('')}
                     </datalist>
                   </div>
 
@@ -140,7 +140,7 @@ function createPointEditViewTemplate (point, offers, selectedOffers, destination
                 </header>
                 <section class="event__details">
                   ${createOfferListTemplate(offers, selectedOffers)}
-                   ${createDestinationTemplate(destination)}
+                   ${createDestinationTemplate(currentDestination)}
                 </section>
               </form>
               </li>
@@ -148,17 +148,17 @@ function createPointEditViewTemplate (point, offers, selectedOffers, destination
 }
 
 export default class PointEditView {
-  constructor({point, offers, selectedOffers ,destination, destinations}) {
+  constructor({point, offers, selectedOffers ,currentDestination, allDestinations}) {
     this.point = point;
     this.offers = offers;
     this.selectedOffers = selectedOffers;
-    this.destination = destination;
-    this.destinations = destinations;
+    this.currentDestination = currentDestination;
+    this.allDestinations = allDestinations;
 
   }
 
   getTemplate() {
-    return createPointEditViewTemplate(this.point, this.offers, this.selectedOffers, this.destination, this.destinations);
+    return createPointEditViewTemplate(this.point, this.offers, this.selectedOffers, this.currentDestination, this.allDestinations);
   }
 
   getElement() {

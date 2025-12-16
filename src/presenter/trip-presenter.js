@@ -15,7 +15,7 @@ export default class TripPresenter {
 
   init() {
     this.tripPoints = [...this.pointsModel.getPoints()];
-    this.tripDestinations = [...this.pointsModel.getDestinations()];
+    this.allDestinations = [...this.pointsModel.getDestinations()];
 
     render(this.sortView, this.mainContainer);
     render(this.pointsListView, this.mainContainer);
@@ -25,8 +25,8 @@ export default class TripPresenter {
         point: this.tripPoints[0],
         offers: this.pointsModel.getOffersByType(this.tripPoints[0].type),
         selectedOffers: this.tripPoints[0].offers,
-        destinations: this.tripDestinations,
-        destination: this.pointsModel.getDestinationById(this.tripPoints[0].destination),
+        allDestinations: this.allDestinations,
+        currentDestination: this.pointsModel.getDestinationById(this.tripPoints[0].destination),
       }),
       this.pointsListView.getElement()
 
