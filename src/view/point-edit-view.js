@@ -34,13 +34,15 @@ function createOfferTemplate(offer, selectedOfferIds) {
 }
 
 function createOfferListTemplate (offers, checkedOffers) {
-
-  return ` <section class="event__section  event__section--offers">
+  if (offers.length > 0) {
+    return ` <section class="event__section  event__section--offers">
                     <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
                     <div class="event__available-offers">
                      ${offers.map((offer) => createOfferTemplate(offer, checkedOffers)).join('')}
                   </section>`;
+  }
+  return '';
 }
 
 
