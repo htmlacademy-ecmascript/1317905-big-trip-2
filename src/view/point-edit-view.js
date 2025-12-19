@@ -79,6 +79,20 @@ function createDestinationTemplate (currentDestination) {
   return '';
 }
 
+function createOpenedButtonTemplate (point) {
+  const { id } = point;
+
+  if (id) {
+    return (
+      `   <button class="event__rollup-btn" type="button">
+                    <span class="visually-hidden">Open event</span>
+                  </button>`
+    );
+  }
+
+  return '';
+}
+
 
 function createPointEditViewTemplate (point, offers, selectedOffers, currentDestination, destinations) {
   const { id, type, dateFrom, dateTo, basePrice } = point;
@@ -86,6 +100,8 @@ function createPointEditViewTemplate (point, offers, selectedOffers, currentDest
 
   const fromDate = humanizeFullDate(dateFrom);
   const toDate = humanizeFullDate(dateTo);
+
+  const isEdit = !id ? 'Cancel' : 'Delete';
 
   return `
   <li class="trip-events__item"><form class="event event--edit" action="#" method="post">
@@ -133,10 +149,8 @@ function createPointEditViewTemplate (point, offers, selectedOffers, currentDest
                   </div>
 
                   <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-                  <button class="event__reset-btn" type="reset">Delete</button>
-                  <button class="event__rollup-btn" type="button">
-                    <span class="visually-hidden">Open event</span>
-                  </button>
+                  <button class="event__reset-btn" type="reset">${isEdit}</button>
+                  ${createOpenedButtonTemplate(point)}
                 </header>
                 <section class="event__details">
                   ${createOfferListTemplate(offers, selectedOffers)}

@@ -50,5 +50,6 @@ function humanizePointDuration(dateFrom, dateTo) {
   return parts.join(' ');
 }
 
+
 export {humanizeTaskDate, humanizeTaskTime, humanizeFullDate, humanizePointDuration};
 

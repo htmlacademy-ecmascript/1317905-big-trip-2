@@ -3,7 +3,7 @@ import SortView from '../view/sort-view.js';
 import PointView from '../view/point-view.js';
 import PointsListView from '../view/points-list-view.js';
 import PointEditView from '../view/point-edit-view.js';
-
+import {EMPTY_POINT} from '../const.js';
 export default class TripPresenter {
   pointsListView = new PointsListView();
   sortView = new SortView();
@@ -19,6 +19,18 @@ export default class TripPresenter {
 
     render(this.sortView, this.mainContainer);
     render(this.pointsListView, this.mainContainer);
+
+    render(
+      new PointEditView({
+        point: EMPTY_POINT,
+        offers: this.pointsModel.getOffersByType(EMPTY_POINT.type),
+        selectedOffers: EMPTY_POINT.offers,
+        destinations: this.allDestinations,
+      }),
+      this.pointsListView.getElement(),
+      'afterbegin'
+    );
+
 
     render(
       new PointEditView({

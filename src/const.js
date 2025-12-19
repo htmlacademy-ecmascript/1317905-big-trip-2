@@ -1,3 +1,13 @@
 const POINTS_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 
-export {POINTS_TYPES};
+const EMPTY_POINT = {
+  basePrice: 0,
+  dateFrom: new Date().toISOString(),
+  dateTo: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
+  destination: '',
+  isFavorite: false,
+  offers: [],
+  type: 'flight'
+};
+
+export {POINTS_TYPES, EMPTY_POINT};
