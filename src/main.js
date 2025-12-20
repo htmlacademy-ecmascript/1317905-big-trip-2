@@ -1,4 +1,4 @@
-import {render, RenderPosition} from './render.js';
+import {render, RenderPosition} from './framework/render.js';
 import FiltersView from './view/filter-view.js';
 import TripPresenter from './presenter/trip-presenter.js';
 import PointModel from './model/points-model.js';

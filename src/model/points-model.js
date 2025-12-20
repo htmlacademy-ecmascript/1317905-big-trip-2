@@ -3,16 +3,16 @@ import { mockTravelOffers } from '../mock/offers.js';
 import { mockTravelDestinations } from '../mock/destinations.js';
 
 export default class PointModel {
-  points = mockTravelPoints;
-  offers = mockTravelOffers;
-  destinations = mockTravelDestinations;
+  #points = mockTravelPoints;
+  #offers = mockTravelOffers;
+  #destinations = mockTravelDestinations;
 
-  getPoints() {
-    return this.points;
+  get points() {
+    return this.#points;
   }
 
   getOffersByType(type) {
-    const offerGroup = this.offers.find((item) => item.type === type);
+    const offerGroup = this.#offers.find((item) => item.type === type);
     return offerGroup ? offerGroup.offers : [];
   }
 
@@ -23,8 +23,8 @@ export default class PointModel {
     );
   }
 
-  getDestinations() {
-    return this.destinations;
+  get destinations() {
+    return this.#destinations;
   }
 
 }

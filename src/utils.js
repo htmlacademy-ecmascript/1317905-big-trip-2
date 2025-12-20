@@ -6,11 +6,17 @@ dayjs.extend(duration);
 dayjs.extend(relativeTime);
 
 const DATE_FORMAT = 'MMM D';
+const DATE_ATTRIBUTE_FORMAT = 'YYYY-MM-DD';
 const TIME_FORMAT = 'HH:mm';
 const FULL_DATE_FORMAT = 'DD/MM/YY HH:mm';
+const FULL_DATE_ATTRIBUTE_FORMAT = 'YYYY-MM-DDTHH:mm';
 
 function humanizeTaskDate(dueDate) {
   return dueDate ? dayjs(dueDate).format(DATE_FORMAT) : '';
+}
+
+function humanizeAttributeDate(dueDate) {
+  return dueDate ? dayjs(dueDate).format(DATE_ATTRIBUTE_FORMAT) : '';
 }
 
 function humanizeTaskTime(dueDate) {
@@ -19,6 +25,10 @@ function humanizeTaskTime(dueDate) {
 
 function humanizeFullDate(dueDate) {
   return dueDate ? dayjs(dueDate).format(FULL_DATE_FORMAT) : '';
+}
+
+function humanizeAttributeFullDate(dueDate) {
+  return dueDate ? dayjs(dueDate).format(FULL_DATE_ATTRIBUTE_FORMAT) : '';
 }
 
 
@@ -51,5 +61,5 @@ function humanizePointDuration(dateFrom, dateTo) {
 }
 
 
-export {humanizeTaskDate, humanizeTaskTime, humanizeFullDate, humanizePointDuration};
+export {humanizeTaskDate, humanizeTaskTime, humanizeFullDate, humanizeAttributeFullDate, humanizeAttributeDate,humanizePointDuration};
 
