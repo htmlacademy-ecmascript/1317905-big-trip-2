@@ -168,7 +168,10 @@ export default class PointEditView extends AbstractView {
   #destinations = null;
   #currentDestination = null;
 
-  constructor({point, offers, selectedOffers , destinations}) {
+  #rollupButtonClick = null;
+  #handleFormSubmit = null;
+
+  constructor({point, offers, selectedOffers , destinations, onCloseClick, onFormSubmit}) {
     super();
     this.#point = point;
     this.#offers = offers;
@@ -178,11 +181,33 @@ export default class PointEditView extends AbstractView {
     this.#currentDestination = destinations.find(
       (dest) => dest.id === point.destination
     ) || { name: '', description: '', pictures: [] };
+
+    this.#rollupButtonClick = onCloseClick;
+    this.#handleFormSubmit = onFormSubmit;
+
+    this.element.querySelector('form')
+      .addEventListener('submit', this.#formSubmitHandler);
+
+    const rollupBtn = this.element.querySelector('.event__rollup-btn');
+    if (rollupBtn) {
+      rollupBtn.addEventListener('click', this.#rollupButtonClicker);
+    }
+
   }
 
   get template() {
     return createPointEditViewTemplate(this.#point, this.#offers, this.#selectedOffers, this.#currentDestination, this.#destinations);
   }
+
+  #rollupButtonClicker = (evt) => {
+    evt.preventDefault();
+    this.#rollupButtonClick();
+  };
+
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleFormSubmit();
+  };
 
 
 }
