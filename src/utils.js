@@ -5,7 +5,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
 
-const DATE_FORMAT = 'D MMMM';
+const DATE_FORMAT = 'MMM D';
 const TIME_FORMAT = 'HH:mm';
 const FULL_DATE_FORMAT = 'DD/MM/YY HH:mm';
 
