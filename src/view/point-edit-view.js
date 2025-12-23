@@ -171,6 +171,8 @@ export default class PointEditView extends AbstractView {
   #rollupButtonClick = null;
   #handleFormSubmit = null;
 
+  #rollupBtn = null;
+
   constructor({point, offers, selectedOffers , destinations, onCloseClick, onFormSubmit}) {
     super();
     this.#point = point;
@@ -188,9 +190,9 @@ export default class PointEditView extends AbstractView {
     this.element.querySelector('form')
       .addEventListener('submit', this.#formSubmitHandler);
 
-    const rollupBtn = this.element.querySelector('.event__rollup-btn');
-    if (rollupBtn) {
-      rollupBtn.addEventListener('click', this.#rollupButtonClicker);
+    this.#rollupBtn = this.element.querySelector('.event__rollup-btn');
+    if (this.#rollupBtn) {
+      this.#rollupBtn.addEventListener('click', this.#rollupButtonClicker);
     }
 
   }

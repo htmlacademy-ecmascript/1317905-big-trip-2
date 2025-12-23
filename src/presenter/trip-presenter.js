@@ -23,19 +23,11 @@ export default class TripPresenter {
     this.#tripPoints = [...this.#pointsModel.points];
     this.#allDestinations = [...this.#pointsModel.destinations];
 
-    render(this.#sortView, this.#mainContainer);
-    render(this.#pointsListView, this.#mainContainer);
-
-    for (let i = 0; i < this.#tripPoints.length; i++) {
-
-      this.#renderPoint(this.#tripPoints[i]);
-
-    }
+    this.#renderApp();
 
   }
 
   #renderPoint(point) {
-
     const escKeyDownHandler = (evt) => {
       if (evt.key === 'Escape') {
         evt.preventDefault();
@@ -78,5 +70,17 @@ export default class TripPresenter {
     }
 
     render(pointView, this.#pointsListView.element);
+  }
+
+  #renderApp() {
+    render(this.#sortView, this.#mainContainer);
+    render(this.#pointsListView, this.#mainContainer);
+
+    for (let i = 0; i < this.#tripPoints.length; i++) {
+
+      this.#renderPoint(this.#tripPoints[i]);
+
+    }
+
   }
 }
