@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import { humanizeFullDate } from '../utils.js';
+import { humanizeFullDate } from '../utils/point.js';
 import { POINTS_TYPES } from '../const.js';
 
 

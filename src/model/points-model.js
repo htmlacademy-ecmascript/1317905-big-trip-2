@@ -1,6 +1,7 @@
 import { mockTravelPoints } from '../mock/points.js';
 import { mockTravelOffers } from '../mock/offers.js';
 import { mockTravelDestinations } from '../mock/destinations.js';
+import { filter } from '../utils/filter.js';
 
 export default class PointModel {
   #points = mockTravelPoints;
@@ -25,6 +26,10 @@ export default class PointModel {
 
   get destinations() {
     return this.#destinations;
+  }
+
+  getPointsByFilter(filterType) {
+    return filter[filterType](this.#points);
   }
 
 }
