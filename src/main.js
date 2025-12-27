@@ -1,5 +1,5 @@
 import {render} from './framework/render.js';
-import FiltersView from './view/filter-view.js';
+import FilterView from './view/filter-view.js';
 import TripPresenter from './presenter/trip-presenter.js';
 import PointModel from './model/points-model.js';
 import {generateFilter} from './mock/filter.js';
@@ -15,7 +15,7 @@ const tripPresenter = new TripPresenter({tripEventsContainer, pointsModel, tripI
 
 const filters = generateFilter(pointsModel.points);
 
-render(new FiltersView({filters}), filtersContainer);
+render(new FilterView({filters}), filtersContainer);
 
 
 tripPresenter.init();
