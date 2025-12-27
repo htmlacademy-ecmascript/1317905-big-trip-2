@@ -11,13 +11,13 @@ export default class TripPresenter {
   #pointsModel = null;
   #mainContainer = null;
   #tripMainElement = null;
+  #tripInfoView = null;
 
   #tripPoints = [];
   #allDestinations = [];
 
   #pointsListView = new PointsListView();
   #sortView = new SortView();
-  #tripInfoView = new TripInfoView();
   #noPointsView = new NoPointsView();
 
   constructor({ tripEventsContainer, pointsModel, tripInfoContainer }) {
@@ -29,6 +29,11 @@ export default class TripPresenter {
   init() {
     this.#tripPoints = [...this.#pointsModel.points];
     this.#allDestinations = [...this.#pointsModel.destinations];
+
+    this.#tripInfoView = new TripInfoView({
+      points: this.#tripPoints,
+      destinations: this.#allDestinations,
+    });
 
     this.#renderApp();
 
@@ -42,6 +47,7 @@ export default class TripPresenter {
         document.removeEventListener('keydown', escKeyDownHandler);
       }
     };
+
 
     const pointView = new PointView({
       point,
