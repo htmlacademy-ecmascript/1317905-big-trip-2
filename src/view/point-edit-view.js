@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import { humanizeFullDate } from '../utils.js';
+import { humanizeFullDate } from '../utils/point.js';
 import { POINTS_TYPES } from '../const.js';
 
 
@@ -173,7 +173,9 @@ export default class PointEditView extends AbstractView {
 
   #rollupBtn = null;
 
-  constructor({point, offers, selectedOffers , destinations, onCloseClick, onFormSubmit}) {
+  #deleteButtonClick = null;
+
+  constructor({point, offers, selectedOffers , destinations, onCloseClick, onFormSubmit, onDeleteClick}) {
     super();
     this.#point = point;
     this.#offers = offers;
@@ -186,9 +188,13 @@ export default class PointEditView extends AbstractView {
 
     this.#rollupButtonClick = onCloseClick;
     this.#handleFormSubmit = onFormSubmit;
+    this.#deleteButtonClick = onDeleteClick;
 
     this.element.querySelector('form')
       .addEventListener('submit', this.#formSubmitHandler);
+
+    this.element.querySelector('.event__reset-btn')
+      .addEventListener('click', this.#buttonDeleteClick);
 
     this.#rollupBtn = this.element.querySelector('.event__rollup-btn');
     if (this.#rollupBtn) {
@@ -209,6 +215,11 @@ export default class PointEditView extends AbstractView {
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
     this.#handleFormSubmit();
+  };
+
+  #buttonDeleteClick = (evt) => {
+    evt.preventDefault();
+    this.#deleteButtonClick();
   };
 
 

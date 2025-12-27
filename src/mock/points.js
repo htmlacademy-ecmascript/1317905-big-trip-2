@@ -16,8 +16,8 @@ export const mockTravelPoints = [
   {
     id: '2',
     basePrice: 200,
-    dateFrom: '2019-07-11T14:00:00.000Z',
-    dateTo: '2019-07-12T09:30:00.000Z',
+    dateFrom: '2026-07-11T14:00:00.000Z',
+    dateTo: '2026-07-12T09:30:00.000Z',
     destination: 'bfa5cb75-a1fe-4b77-a83c-0e528e910e02',
     isFavorite: true,
     offers: [
@@ -29,8 +29,8 @@ export const mockTravelPoints = [
   {
     id: '3',
     basePrice: 50,
-    dateFrom: '2019-07-12T10:15:00.000Z',
-    dateTo: '2019-07-12T12:45:00.000Z',
+    dateFrom: '2025-07-17T10:15:00.000Z',
+    dateTo: '2025-07-19T12:45:00.000Z',
     destination: 'bfa5cb75-a1fe-4b77-a83c-0e528e910e03',
     isFavorite: false,
     offers: [

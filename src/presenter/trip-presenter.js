@@ -1,22 +1,29 @@
-import { render, replace} from '../framework/render.js';
+import { render, replace, RenderPosition} from '../framework/render.js';
 import SortView from '../view/sort-view.js';
 import PointView from '../view/point-view.js';
 import PointsListView from '../view/points-list-view.js';
 import PointEditView from '../view/point-edit-view.js';
+import TripInfoView from '../view/trip-info-view.js';
+import NoPointsView from '../view/no-point-view.js';
+
 
 export default class TripPresenter {
   #pointsModel = null;
   #mainContainer = null;
+  #tripMainElement = null;
 
   #tripPoints = [];
   #allDestinations = [];
 
   #pointsListView = new PointsListView();
   #sortView = new SortView();
+  #tripInfoView = new TripInfoView();
+  #noPointsView = new NoPointsView();
 
-  constructor({ tripEventsContainer, pointsModel }) {
+  constructor({ tripEventsContainer, pointsModel, tripInfoContainer }) {
     this.#mainContainer = tripEventsContainer;
     this.#pointsModel = pointsModel;
+    this.#tripMainElement = tripInfoContainer;
   }
 
   init() {
@@ -58,6 +65,10 @@ export default class TripPresenter {
       onFormSubmit: () => {
         replaceFormToPoint();
         document.removeEventListener('keydown', escKeyDownHandler);
+      },
+      onDeleteClick: () => {
+        replaceFormToPoint();
+        document.removeEventListener('keydown', escKeyDownHandler);
       }
     });
 
@@ -73,6 +84,15 @@ export default class TripPresenter {
   }
 
   #renderApp() {
+
+    this.#mainContainer.innerHTML = '';
+
+    if (this.#tripPoints.length === 0) {
+      render(this.#noPointsView, this.#mainContainer);
+      return;
+    }
+
+    render(this.#tripInfoView, this.#tripMainElement, RenderPosition.AFTERBEGIN);
     render(this.#sortView, this.#mainContainer);
     render(this.#pointsListView, this.#mainContainer);
 
