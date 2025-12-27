@@ -1,4 +1,5 @@
 import AbstractView from '../framework/view/abstract-view.js';
+import {FilterType} from '../const.js';
 
 function createFilterTemplate(filterItems, currentFilterType) {
   const filterItemsTemplate = filterItems.map((filter) => createFilterItemTemplate(filter, currentFilterType)).join('');
@@ -29,11 +30,11 @@ function createFilterItemTemplate(filter, currentFilterType) {
   `;
 }
 
-export default class FiltersView extends AbstractView {
+export default class FilterView extends AbstractView {
   #filters = null;
-  #currentFilterType = 'everything';
+  #currentFilterType = FilterType.EVERYTHING;
 
-  constructor({ filters, currentFilterType = 'everything' }) {
+  constructor({ filters, currentFilterType = FilterType.EVERYTHING }) {
     super();
     this.#filters = filters;
     this.#currentFilterType = currentFilterType;

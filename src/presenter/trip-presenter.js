@@ -55,7 +55,6 @@ export default class TripPresenter {
       destinations: this.#allDestinations,
       onEditClick: () => {
         replacePointToForm();
-        document.addEventListener('keydown', escKeyDownHandler);
       }
     });
 
@@ -66,32 +65,30 @@ export default class TripPresenter {
       destinations: this.#allDestinations,
       onCloseClick: () => {
         replaceFormToPoint();
-        document.removeEventListener('keydown', escKeyDownHandler);
       },
       onFormSubmit: () => {
         replaceFormToPoint();
-        document.removeEventListener('keydown', escKeyDownHandler);
       },
       onDeleteClick: () => {
         replaceFormToPoint();
-        document.removeEventListener('keydown', escKeyDownHandler);
       }
     });
 
     function replacePointToForm() {
       replace(pointEditView, pointView);
+      document.addEventListener('keydown', escKeyDownHandler);
+
     }
 
     function replaceFormToPoint() {
       replace(pointView, pointEditView);
+      document.removeEventListener('keydown', escKeyDownHandler);
     }
 
     render(pointView, this.#pointsListView.element);
   }
 
   #renderApp() {
-
-    this.#mainContainer.innerHTML = '';
 
     if (this.#tripPoints.length === 0) {
       render(this.#noPointsView, this.#mainContainer);
