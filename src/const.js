@@ -17,4 +17,9 @@ const FilterType = {
   PAST: 'past',
 };
 
-export {POINTS_TYPES, EMPTY_POINT, FilterType };
+const Mode = {
+  DEFAULT: 'DEFAULT',
+  EDITING: 'EDITING',
+};
+
+export {POINTS_TYPES, EMPTY_POINT, FilterType, Mode };
