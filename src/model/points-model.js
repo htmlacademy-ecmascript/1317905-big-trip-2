@@ -2,6 +2,7 @@ import { mockTravelPoints } from '../mock/points.js';
 import { mockTravelOffers } from '../mock/offers.js';
 import { mockTravelDestinations } from '../mock/destinations.js';
 
+
 export default class PointModel {
   #points = mockTravelPoints;
   #offers = mockTravelOffers;
@@ -26,5 +27,6 @@ export default class PointModel {
   get destinations() {
     return this.#destinations;
   }
+
 
 }

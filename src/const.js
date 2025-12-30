@@ -10,4 +10,11 @@ const EMPTY_POINT = {
   type: 'flight'
 };
 
-export {POINTS_TYPES, EMPTY_POINT};
+const FilterType = {
+  EVERYTHING: 'everything',
+  FUTURE: 'future',
+  PRESENT: 'present',
+  PAST: 'past',
+};
+
+export {POINTS_TYPES, EMPTY_POINT, FilterType };

@@ -1,9 +1,16 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import isBetween from 'dayjs/plugin/isBetween';
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
+
+dayjs.extend(isBetween);
+dayjs.extend(isSameOrBefore);
+dayjs.extend(isSameOrAfter);
 
 const DATE_FORMAT = 'MMM D';
 const DATE_ATTRIBUTE_FORMAT = 'YYYY-MM-DD';
@@ -61,5 +68,17 @@ function humanizePointDuration(dateFrom, dateTo) {
 }
 
 
-export {humanizeTaskDate, humanizeTaskTime, humanizeFullDate, humanizeAttributeFullDate, humanizeAttributeDate,humanizePointDuration};
+const isFuture = (point) => dayjs(point.dateFrom).isAfter(dayjs());
+
+const isPast = (point) => dayjs(point.dateTo).isBefore(dayjs());
+
+const isPresent = (point) => {
+  const now = dayjs();
+  const start = dayjs(point.dateFrom);
+  const end = dayjs(point.dateTo);
+
+  return start.isSameOrBefore(now) && end.isSameOrAfter(now);
+};
+
+export {humanizeTaskDate, humanizeTaskTime, humanizeFullDate, humanizeAttributeFullDate, humanizeAttributeDate,humanizePointDuration, isFuture, isPast, isPresent};
 

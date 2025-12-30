@@ -1,27 +1,35 @@
-import { render, replace} from '../framework/render.js';
+import { render, replace, RenderPosition} from '../framework/render.js';
 import SortView from '../view/sort-view.js';
 import PointView from '../view/point-view.js';
 import PointsListView from '../view/points-list-view.js';
 import PointEditView from '../view/point-edit-view.js';
+import TripInfoView from '../view/trip-info-view.js';
+import NoPointsView from '../view/no-point-view.js';
+
 
 export default class TripPresenter {
   #pointsModel = null;
   #mainContainer = null;
+  #tripMainElement = null;
 
   #tripPoints = [];
   #allDestinations = [];
 
   #pointsListView = new PointsListView();
   #sortView = new SortView();
+  #tripInfoView = new TripInfoView();
+  #noPointsView = new NoPointsView();
 
-  constructor({ tripEventsContainer, pointsModel }) {
+  constructor({ tripEventsContainer, pointsModel, tripInfoContainer }) {
     this.#mainContainer = tripEventsContainer;
     this.#pointsModel = pointsModel;
+    this.#tripMainElement = tripInfoContainer;
   }
 
   init() {
     this.#tripPoints = [...this.#pointsModel.points];
     this.#allDestinations = [...this.#pointsModel.destinations];
+
 
     this.#renderApp();
 
@@ -36,13 +44,13 @@ export default class TripPresenter {
       }
     };
 
+
     const pointView = new PointView({
       point,
       offers: this.#pointsModel.getSelectedOffers(point.type, point.offers),
       destinations: this.#allDestinations,
       onEditClick: () => {
         replacePointToForm();
-        document.addEventListener('keydown', escKeyDownHandler);
       }
     });
 
@@ -53,26 +61,37 @@ export default class TripPresenter {
       destinations: this.#allDestinations,
       onCloseClick: () => {
         replaceFormToPoint();
-        document.removeEventListener('keydown', escKeyDownHandler);
       },
       onFormSubmit: () => {
         replaceFormToPoint();
-        document.removeEventListener('keydown', escKeyDownHandler);
+      },
+      onDeleteClick: () => {
+        replaceFormToPoint();
       }
     });
 
     function replacePointToForm() {
       replace(pointEditView, pointView);
+      document.addEventListener('keydown', escKeyDownHandler);
+
     }
 
     function replaceFormToPoint() {
       replace(pointView, pointEditView);
+      document.removeEventListener('keydown', escKeyDownHandler);
     }
 
     render(pointView, this.#pointsListView.element);
   }
 
   #renderApp() {
+
+    if (this.#tripPoints.length === 0) {
+      render(this.#noPointsView, this.#mainContainer);
+      return;
+    }
+
+    render(this.#tripInfoView, this.#tripMainElement, RenderPosition.AFTERBEGIN);
     render(this.#sortView, this.#mainContainer);
     render(this.#pointsListView, this.#mainContainer);
 
