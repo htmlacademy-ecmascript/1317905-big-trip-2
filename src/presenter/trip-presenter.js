@@ -1,11 +1,10 @@
-import { render, replace, RenderPosition} from '../framework/render.js';
+import { render, RenderPosition} from '../framework/render.js';
 import SortView from '../view/sort-view.js';
-import PointView from '../view/point-view.js';
 import PointsListView from '../view/points-list-view.js';
-import PointEditView from '../view/point-edit-view.js';
 import TripInfoView from '../view/trip-info-view.js';
 import NoPointsView from '../view/no-point-view.js';
-
+import PointPresenter from './point-presenter.js';
+import {updateItem} from '../utils/point.js';
 
 export default class TripPresenter {
   #pointsModel = null;
@@ -14,6 +13,8 @@ export default class TripPresenter {
 
   #tripPoints = [];
   #allDestinations = [];
+
+  #pointPresenters = new Map();
 
   #pointsListView = new PointsListView();
   #sortView = new SortView();
@@ -30,75 +31,68 @@ export default class TripPresenter {
     this.#tripPoints = [...this.#pointsModel.points];
     this.#allDestinations = [...this.#pointsModel.destinations];
 
-
     this.#renderApp();
-
   }
+
+  #handleModeChange = () => {
+    this.#pointPresenters.forEach((presenter) => presenter.resetView());
+  };
+
+
+  #handleDataChange = (updatedPoint) => {
+    this.#tripPoints = updateItem(this.#tripPoints, updatedPoint);
+    this.#pointPresenters.get(updatedPoint.id).init(updatedPoint);
+  };
 
   #renderPoint(point) {
-    const escKeyDownHandler = (evt) => {
-      if (evt.key === 'Escape') {
-        evt.preventDefault();
-        replaceFormToPoint();
-        document.removeEventListener('keydown', escKeyDownHandler);
-      }
-    };
-
-
-    const pointView = new PointView({
-      point,
-      offers: this.#pointsModel.getSelectedOffers(point.type, point.offers),
-      destinations: this.#allDestinations,
-      onEditClick: () => {
-        replacePointToForm();
-      }
+    const pointPresenter = new PointPresenter({
+      pointListContainer: this.#pointsListView.element,
+      pointsModel: this.#pointsModel,
+      allDestinations: this.#allDestinations,
+      onDataChange: this.#handleDataChange,
+      onModeChange: this.#handleModeChange
     });
 
-    const pointEditView = new PointEditView({
-      point,
-      offers: this.#pointsModel.getOffersByType(point.type),
-      selectedOffers: point.offers,
-      destinations: this.#allDestinations,
-      onCloseClick: () => {
-        replaceFormToPoint();
-      },
-      onFormSubmit: () => {
-        replaceFormToPoint();
-      },
-      onDeleteClick: () => {
-        replaceFormToPoint();
-      }
-    });
-
-    function replacePointToForm() {
-      replace(pointEditView, pointView);
-      document.addEventListener('keydown', escKeyDownHandler);
-
-    }
-
-    function replaceFormToPoint() {
-      replace(pointView, pointEditView);
-      document.removeEventListener('keydown', escKeyDownHandler);
-    }
-
-    render(pointView, this.#pointsListView.element);
+    pointPresenter.init(point);
+    this.#pointPresenters.set(point.id, pointPresenter);
   }
+
+
+  #renderInfo() {
+    render(this.#tripInfoView, this.#tripMainElement, RenderPosition.AFTERBEGIN);
+  }
+
+  #renderSort() {
+    render(this.#sortView, this.#mainContainer);
+  }
+
+  #clearPointsList() {
+    this.#pointPresenters.forEach((presenter) => presenter.destroy());
+    this.#pointPresenters.clear();
+  }
+
+  #renderPointsList() {
+    render(this.#pointsListView, this.#mainContainer);
+  }
+
+  #renderNoPoints() {
+    render(this.#noPointsView, this.#mainContainer);
+  }
+
 
   #renderApp() {
 
     if (this.#tripPoints.length === 0) {
-      render(this.#noPointsView, this.#mainContainer);
+      this.#renderNoPoints();
       return;
     }
 
-    render(this.#tripInfoView, this.#tripMainElement, RenderPosition.AFTERBEGIN);
-    render(this.#sortView, this.#mainContainer);
-    render(this.#pointsListView, this.#mainContainer);
+    this.#renderInfo();
+    this.#renderSort();
+    this.#renderPointsList();
 
     for (let i = 0; i < this.#tripPoints.length; i++) {
-
       this.#renderPoint(this.#tripPoints[i]);
-
     }
 
   }
