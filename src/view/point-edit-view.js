@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import { humanizeFullDate } from '../utils/point.js';
+import { formatDate } from '../utils/point.js';
 import { POINTS_TYPES } from '../const.js';
 
 
@@ -98,8 +98,8 @@ function createPointEditViewTemplate (point, offers, selectedOffers, currentDest
   const { id, type, dateFrom, dateTo, basePrice } = point;
   const { name } = currentDestination;
 
-  const fromDate = humanizeFullDate(dateFrom);
-  const toDate = humanizeFullDate(dateTo);
+  const fromDate = formatDate(dateFrom, 'fullDate');
+  const toDate = formatDate(dateTo, 'fullDate');
 
   const isEdit = !id ? 'Cancel' : 'Delete';
 

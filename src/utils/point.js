@@ -4,6 +4,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import isBetween from 'dayjs/plugin/isBetween';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
+import {DATE_FORMATS} from '../const.js';
 
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
@@ -12,57 +13,29 @@ dayjs.extend(isBetween);
 dayjs.extend(isSameOrBefore);
 dayjs.extend(isSameOrAfter);
 
-const DATE_FORMAT = 'MMM D';
-const DATE_ATTRIBUTE_FORMAT = 'YYYY-MM-DD';
-const TIME_FORMAT = 'HH:mm';
-const FULL_DATE_FORMAT = 'DD/MM/YY HH:mm';
-const FULL_DATE_ATTRIBUTE_FORMAT = 'YYYY-MM-DDTHH:mm';
 
-function humanizeTaskDate(dueDate) {
-  return dueDate ? dayjs(dueDate).format(DATE_FORMAT) : '';
-}
-
-function humanizeAttributeDate(dueDate) {
-  return dueDate ? dayjs(dueDate).format(DATE_ATTRIBUTE_FORMAT) : '';
-}
-
-function humanizeTaskTime(dueDate) {
-  return dueDate ? dayjs(dueDate).format(TIME_FORMAT) : '';
-}
-
-function humanizeFullDate(dueDate) {
-  return dueDate ? dayjs(dueDate).format(FULL_DATE_FORMAT) : '';
-}
-
-function humanizeAttributeFullDate(dueDate) {
-  return dueDate ? dayjs(dueDate).format(FULL_DATE_ATTRIBUTE_FORMAT) : '';
+function formatDate(date, formatKey = 'taskDate') {
+  if (!date) {
+    return '';
+  }
+  return dayjs(date).format(DATE_FORMATS[formatKey]);
 }
 
 
 function humanizePointDuration(dateFrom, dateTo) {
   const start = dayjs(dateFrom);
   const end = dayjs(dateTo);
-
   const diffInMinutes = end.diff(start, 'minute');
   const dur = dayjs.duration(diffInMinutes, 'minutes');
 
-  const days = dur.days();
-  const hours = dur.hours();
-  const minutes = dur.minutes();
-
   const parts = [];
-
-  if (days > 0) {
-    parts.push(`${String(days).padStart(2, '0')}D`);
+  if (dur.days() > 0) {
+    parts.push(`${dur.days().toString().padStart(2, '0')}D`);
   }
-
-
-  if (days > 0 || hours > 0) {
-    parts.push(`${String(hours).padStart(2, '0')}H`);
+  if (dur.days() > 0 || dur.hours() > 0) {
+    parts.push(`${dur.hours().toString().padStart(2, '0')}H`);
   }
-
-
-  parts.push(`${String(minutes).padStart(2, '0')}M`);
+  parts.push(`${dur.minutes().toString().padStart(2, '0')}M`);
 
   return parts.join(' ');
 }
@@ -84,5 +57,5 @@ function updateItem(items, update) {
   return items.map((item) => item.id === update.id ? update : item);
 }
 
-export {humanizeTaskDate, humanizeTaskTime, humanizeFullDate, humanizeAttributeFullDate, humanizeAttributeDate, humanizePointDuration, isFuture, isPast, isPresent, updateItem};
+export {formatDate, humanizePointDuration, isFuture, isPast, isPresent, updateItem};
 

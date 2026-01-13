@@ -39,4 +39,13 @@ const SORT_ITEMS = [
 ];
 
 
-export {POINTS_TYPES, EMPTY_POINT, FilterType, Mode, SortType, SORT_ITEMS };
+const DATE_FORMATS = {
+  taskDate: 'MMM D',
+  attributeDate: 'YYYY-MM-DD',
+  taskTime: 'HH:mm',
+  fullDate: 'DD/MM/YY HH:mm',
+  attributeFullDate: 'YYYY-MM-DDTHH:mm'
+};
+
+
+export {POINTS_TYPES, EMPTY_POINT, FilterType, Mode, SortType, SORT_ITEMS, DATE_FORMATS };
