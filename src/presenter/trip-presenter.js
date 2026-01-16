@@ -49,7 +49,16 @@ export default class TripPresenter {
   #handleDataChange = (updatedPoint) => {
     this.#tripPoints = updateItem(this.#tripPoints, updatedPoint);
     this.#sourcedPoints = updateItem(this.#sourcedPoints, updatedPoint);
-    this.#pointPresenters.get(updatedPoint.id).init(updatedPoint);
+
+    if (this.#currentSortType === SortType.TIME || this.#currentSortType === SortType.PRICE) {
+      this.#sortTasks(this.#currentSortType);
+      this.#clearPointsList();
+      this.#renderPointsList();
+      this.#renderPoints();
+    } else {
+
+      this.#pointPresenters.get(updatedPoint.id).init(updatedPoint);
+    }
   };
 
   #renderPoint(point) {
