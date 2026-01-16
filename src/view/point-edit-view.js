@@ -305,18 +305,9 @@ export default class PointEditView extends AbstractStatefulView {
       dateFrom: selectedDates[0] ? selectedDates[0].toISOString() : null,
       dateTo:   selectedDates[1] ? selectedDates[1].toISOString() : null,
     });
+
   };
 
-
-  #dateValueUpdateHandler = (selectedDates) => {
-    if (selectedDates.length === 1 && selectedDates[0]) {
-
-      this.updateElement({
-        dateFrom: selectedDates[0].toISOString(),
-        dateTo: null
-      });
-    }
-  };
 
   #setDatepickers() {
 
@@ -329,24 +320,28 @@ export default class PointEditView extends AbstractStatefulView {
 
     const fpFormat = 'd/m/y H:i';
 
-
     this.#startPicker = flatpickr(startInput, {
       enableTime: true,
       'time_24hr': true,
       dateFormat: fpFormat,
       mode: 'range',
-
       plugins: [new rangePlugin({ input: endInput })],
 
-      onValueUpdate: this.#dateValueUpdateHandler,
-
       onChange: this.#dateChangeHandler,
-
       onOpen: () => {
         if (this._state.dateFrom) {
           this.#startPicker.set('minDate', new Date(this._state.dateFrom));
         }
-      }
+      },
+      onValueUpdate: (selectedDates) => {
+        if (selectedDates.length === 1 && selectedDates[0]) {
+          this.updateElement({
+            dateFrom: selectedDates[0].toISOString(),
+            dateTo: null
+          });
+        }
+      },
+
     });
   }
 
