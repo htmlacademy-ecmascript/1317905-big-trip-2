@@ -288,15 +288,6 @@ export default class PointEditView extends AbstractStatefulView {
     });
   };
 
-
-  #dateChangeHandler = (selectedDates) => {
-    this.updateElement({
-      dateFrom: selectedDates[0] ? selectedDates[0].toISOString() : null,
-      dateTo:   selectedDates[1] ? selectedDates[1].toISOString() : null,
-    });
-
-  };
-
   removeElement() {
     if (this.#startPicker) {
       this.#startPicker.destroy();
@@ -308,6 +299,15 @@ export default class PointEditView extends AbstractStatefulView {
     }
     super.removeElement();
   }
+
+
+  #dateChangeHandler = (selectedDates) => {
+    this.updateElement({
+      dateFrom: selectedDates[0] ? selectedDates[0].toISOString() : null,
+      dateTo:   selectedDates[1] ? selectedDates[1].toISOString() : null,
+    });
+
+  };
 
   #setDatepickers() {
 
