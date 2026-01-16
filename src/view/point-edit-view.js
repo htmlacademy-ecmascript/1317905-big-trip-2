@@ -333,15 +333,6 @@ export default class PointEditView extends AbstractStatefulView {
           this.#startPicker.set('minDate', new Date(this._state.dateFrom));
         }
       },
-      onValueUpdate: (selectedDates) => {
-        if (selectedDates.length === 1 && selectedDates[0]) {
-          this.updateElement({
-            dateFrom: selectedDates[0].toISOString(),
-            dateTo: null
-          });
-        }
-      },
-
     });
   }
 
