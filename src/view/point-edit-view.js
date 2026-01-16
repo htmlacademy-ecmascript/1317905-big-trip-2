@@ -147,7 +147,7 @@ function createPointEditViewTemplate(state, offers, selectedOffers, currentDesti
               <span class="visually-hidden">Price</span>
               &euro;
             </label>
-            <input class="event__input  event__input--price" id="event-price-${id}" type="number" name="event-price" value="${basePrice}">
+            <input class="event__input  event__input--price" id="event-price-${id}" type="text" name="event-price" value="${basePrice}">
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -305,14 +305,20 @@ export default class PointEditView extends AbstractStatefulView {
       dateFrom: selectedDates[0] ? selectedDates[0].toISOString() : null,
       dateTo:   selectedDates[1] ? selectedDates[1].toISOString() : null,
     });
-
   };
 
 
+  #dateValueUpdateHandler = (selectedDates) => {
+    if (selectedDates.length === 1 && selectedDates[0]) {
+
+      this.updateElement({
+        dateFrom: selectedDates[0].toISOString(),
+        dateTo: null
+      });
+    }
+  };
+
   #setDatepickers() {
-
-
-    this.#endPicker = null;
 
     const startInput = this.element.querySelector(`#event-start-time-${this._state.id}`);
     const endInput = this.element.querySelector(`#event-end-time-${this._state.id}`);
@@ -323,6 +329,7 @@ export default class PointEditView extends AbstractStatefulView {
 
     const fpFormat = 'd/m/y H:i';
 
+
     this.#startPicker = flatpickr(startInput, {
       enableTime: true,
       'time_24hr': true,
@@ -331,8 +338,15 @@ export default class PointEditView extends AbstractStatefulView {
 
       plugins: [new rangePlugin({ input: endInput })],
 
+      onValueUpdate: this.#dateValueUpdateHandler,
 
       onChange: this.#dateChangeHandler,
+
+      onOpen: () => {
+        if (this._state.dateFrom) {
+          this.#startPicker.set('minDate', new Date(this._state.dateFrom));
+        }
+      }
     });
   }
 
