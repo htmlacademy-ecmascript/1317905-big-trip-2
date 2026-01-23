@@ -197,7 +197,6 @@ export default class PointEditView extends AbstractStatefulView {
       description: '',
       pictures: []
     };
-
     return createPointEditViewTemplate(this._state, offersForType, this._state.offers, currentDestination, this.#destinations);
   }
 

@@ -1,9 +1,12 @@
 const POINTS_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 
+const now = new Date();
+now.setSeconds(0, 0);
+
 const EMPTY_POINT = {
   basePrice: 0,
-  dateFrom: new Date().setHours(0, 0, 0, 0),
-  dateTo: new Date().setHours(0, 0, 0, 0),
+  dateFrom: now.toISOString(),
+  dateTo: now.toISOString(),
   destination: '',
   isFavorite: false,
   offers: [],
