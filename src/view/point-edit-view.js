@@ -6,7 +6,7 @@ import { POINTS_TYPES } from '../const.js';
 import flatpickr from 'flatpickr';
 
 import 'flatpickr/dist/flatpickr.min.css';
-import rangePlugin from 'flatpickr/dist/plugins/rangePlugin';
+// import rangePlugin from 'flatpickr/dist/plugins/rangePlugin';
 
 function createTypeListTemplate(type, currentType, id) {
   const isChecked = type === currentType ? 'checked' : '';
@@ -300,12 +300,38 @@ export default class PointEditView extends AbstractStatefulView {
   }
 
 
-  #dateChangeHandler = (selectedDates) => {
-    this._setState({
-      dateFrom: selectedDates[0] ? selectedDates[0].toISOString() : null,
-      dateTo:   selectedDates[1] ? selectedDates[1].toISOString() : null,
-    });
+  #startDateChangeHandler = (selectedDates, dateStr, instance) => {
+    const startDate = selectedDates[0];
+
+    if (startDate) {
+      this._setState({
+        dateFrom: startDate.toISOString(),
+      });
+
+      instance.element.value = instance.formatDate(startDate, 'd/m/y H:i');
+      if (this.#endPicker) {
+        this.#endPicker.set('minDate', startDate);
+        const currentEnd = this._state.dateTo ? new Date(this._state.dateTo) : null;
+        if (currentEnd && currentEnd < startDate) {
+          this.#endPicker.setDate(startDate, true);
+          this._setState({ dateTo: startDate.toISOString() });
+        }
+      }
+    }
   };
+
+
+  #endDateChangeHandler = (selectedDates, dateStr, instance) => {
+    const endDate = selectedDates[0];
+
+    if (endDate) {
+      this._setState({
+        dateTo: endDate.toISOString(),
+      });
+      instance.element.value = instance.formatDate(endDate, 'd/m/y H:i');
+    }
+  };
+
 
   #setDatepickers() {
     const startInput = this.element.querySelector(`#event-start-time-${this._state.id}`);
@@ -321,9 +347,17 @@ export default class PointEditView extends AbstractStatefulView {
       enableTime: true,
       'time_24hr': true,
       dateFormat: fpFormat,
-      mode: 'range',
-      plugins: [new rangePlugin({ input: endInput })],
-      onClose: this.#dateChangeHandler,
+      defaultDate: this._state.dateFrom ? new Date(this._state.dateFrom) : null,
+      onChange: this.#startDateChangeHandler,
+    });
+
+    this.#endPicker = flatpickr(endInput, {
+      enableTime: true,
+      'time_24hr': true,
+      dateFormat: fpFormat,
+      defaultDate: this._state.dateTo ? new Date(this._state.dateTo) : null,
+      minDate: this._state.dateFrom ? new Date(this._state.dateFrom) : null,
+      onChange: this.#endDateChangeHandler,
     });
   }
 
@@ -332,7 +366,6 @@ export default class PointEditView extends AbstractStatefulView {
     const newPrice = parseInt(evt.target.value, 10) || 0;
     this._setState({ basePrice: newPrice });
   };
-
 
   static parsePointToState(point) {
     return { ...point };
