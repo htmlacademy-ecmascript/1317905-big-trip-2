@@ -1,21 +1,32 @@
-import {render} from './framework/render.js';
-import FilterView from './view/filter-view.js';
 import TripPresenter from './presenter/trip-presenter.js';
+import FilterPresenter from './presenter/filter-presenter.js';
 import PointModel from './model/points-model.js';
-import {generateFilter} from './mock/filter.js';
-
+import FilterModel from './model/filter-model.js';
 
 const tripInfoContainer = document.querySelector('.trip-main');
 const filtersContainer = tripInfoContainer.querySelector('.trip-controls__filters');
 const tripEventsContainer = document.querySelector('.trip-events');
-
+const newEventButton = document.querySelector('.trip-main__event-add-btn');
 
 const pointsModel = new PointModel();
-const tripPresenter = new TripPresenter({tripEventsContainer, pointsModel, tripInfoContainer});
+const filterModel = new FilterModel();
+const filterPresenter = new FilterPresenter({
+  filterContainer: filtersContainer,
+  filterModel,
+  pointsModel
+});
+const tripPresenter = new TripPresenter({
+  tripEventsContainer,
+  pointsModel,
+  filterModel,
+  tripInfoContainer
+});
 
-const filters = generateFilter(pointsModel.points);
+newEventButton.addEventListener('click', (evt) => {
+  evt.preventDefault();
+  newEventButton.disabled = true;
+  tripPresenter.createPoint();
+});
 
-render(new FilterView({filters}), filtersContainer);
-
-
+filterPresenter.init();
 tripPresenter.init();

@@ -1,3 +1,4 @@
+import he from 'he';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { formatDate } from '../utils/point.js';
 import { POINTS_TYPES } from '../const.js';
@@ -5,7 +6,7 @@ import { POINTS_TYPES } from '../const.js';
 import flatpickr from 'flatpickr';
 
 import 'flatpickr/dist/flatpickr.min.css';
-import rangePlugin from 'flatpickr/dist/plugins/rangePlugin';
+// import rangePlugin from 'flatpickr/dist/plugins/rangePlugin';
 
 function createTypeListTemplate(type, currentType, id) {
   const isChecked = type === currentType ? 'checked' : '';
@@ -100,10 +101,12 @@ function createPointEditViewTemplate(state, offers, selectedOffers, currentDesti
   const endDate = formatDate(dateTo, 'fullDate');
 
   const typesList = POINTS_TYPES.map((pointType) => createTypeListTemplate(pointType, type, id)).join('');
-  const destinationsList = destinations.map((dest) => `<option value="${dest.name}"></option>`).join('');
+  const destinationsList = destinations.map((dest) => `<option value="${he.encode(dest.name)}"></option>`).join('');
   const offersList = createOfferListTemplate(offers, selectedOffers);
   const destinationTemplate = createDestinationTemplate(currentDestination);
   const rollupButton = createOpenedButtonTemplate(state);
+
+  const isEdit = !id ? 'Cancel' : 'Delete';
 
   return `
     <li class="trip-events__item">
@@ -151,7 +154,7 @@ function createPointEditViewTemplate(state, offers, selectedOffers, currentDesti
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-          <button class="event__reset-btn" type="reset">Delete</button>
+          <button class="event__reset-btn" type="reset">${isEdit}</button>
           ${rollupButton}
         </header>
         <section class="event__details">
@@ -196,7 +199,6 @@ export default class PointEditView extends AbstractStatefulView {
       description: '',
       pictures: []
     };
-
     return createPointEditViewTemplate(this._state, offersForType, this._state.offers, currentDestination, this.#destinations);
   }
 
@@ -211,7 +213,8 @@ export default class PointEditView extends AbstractStatefulView {
     this.element.querySelector('.event__reset-btn')?.addEventListener('click', this.#buttonDeleteClick);
     this.element.querySelector('.event__type-group')?.addEventListener('change', this.#typeChangeHandler);
     this.element.querySelector('.event__available-offers')?.addEventListener('change', this.#offerChangeHandler);
-    this.element.querySelector('.event__input--destination')?.addEventListener('change', this.#destinationChangeHandler);
+    this.element.querySelector('.event__input--destination')?.addEventListener('input', this.#destinationInputHandler);
+    this.element.querySelector('.event__input--destination')?.addEventListener('blur', this.#destinationInputBlurHandler);
     this.element.querySelector('.event__input--price')?.addEventListener('change', this.#priceChangeHandler);
 
     this.#rollupBtn = this.element.querySelector('.event__rollup-btn');
@@ -246,8 +249,7 @@ export default class PointEditView extends AbstractStatefulView {
     });
   };
 
-  #destinationChangeHandler = (evt) => {
-    evt.preventDefault();
+  #destinationInputHandler = (evt) => {
     const selectedName = evt.target.value.trim();
     const selectedDest = this.#destinations.find((dest) => dest.name === selectedName);
 
@@ -255,10 +257,12 @@ export default class PointEditView extends AbstractStatefulView {
       this.updateElement({
         destination: selectedDest.id
       });
-    } else {
-
-      evt.target.value = '';
     }
+  };
+
+  #destinationInputBlurHandler = (evt) => {
+    const currentDest = this.#destinations.find((dest) => dest.id === this._state.destination);
+    evt.target.value = currentDest ? currentDest.name : '';
   };
 
   #offerChangeHandler = (evt) => {
@@ -296,12 +300,38 @@ export default class PointEditView extends AbstractStatefulView {
   }
 
 
-  #dateChangeHandler = (selectedDates) => {
-    this._setState({
-      dateFrom: selectedDates[0] ? selectedDates[0].toISOString() : null,
-      dateTo:   selectedDates[1] ? selectedDates[1].toISOString() : null,
-    });
+  #startDateChangeHandler = (selectedDates, dateStr, instance) => {
+    const startDate = selectedDates[0];
+
+    if (startDate) {
+      this._setState({
+        dateFrom: startDate.toISOString(),
+      });
+
+      instance.element.value = instance.formatDate(startDate, 'd/m/y H:i');
+      if (this.#endPicker) {
+        this.#endPicker.set('minDate', startDate);
+        const currentEnd = this._state.dateTo ? new Date(this._state.dateTo) : null;
+        if (currentEnd && currentEnd < startDate) {
+          this.#endPicker.setDate(startDate, true);
+          this._setState({ dateTo: startDate.toISOString() });
+        }
+      }
+    }
   };
+
+
+  #endDateChangeHandler = (selectedDates, dateStr, instance) => {
+    const endDate = selectedDates[0];
+
+    if (endDate) {
+      this._setState({
+        dateTo: endDate.toISOString(),
+      });
+      instance.element.value = instance.formatDate(endDate, 'd/m/y H:i');
+    }
+  };
+
 
   #setDatepickers() {
     const startInput = this.element.querySelector(`#event-start-time-${this._state.id}`);
@@ -317,17 +347,25 @@ export default class PointEditView extends AbstractStatefulView {
       enableTime: true,
       'time_24hr': true,
       dateFormat: fpFormat,
-      mode: 'range',
-      plugins: [new rangePlugin({ input: endInput })],
-      onClose: this.#dateChangeHandler,
+      defaultDate: this._state.dateFrom ? new Date(this._state.dateFrom) : null,
+      onChange: this.#startDateChangeHandler,
+    });
+
+    this.#endPicker = flatpickr(endInput, {
+      enableTime: true,
+      'time_24hr': true,
+      dateFormat: fpFormat,
+      defaultDate: this._state.dateTo ? new Date(this._state.dateTo) : null,
+      minDate: this._state.dateFrom ? new Date(this._state.dateFrom) : null,
+      onChange: this.#endDateChangeHandler,
     });
   }
 
   #priceChangeHandler = (evt) => {
+    evt.target.value = evt.target.value.replace(/[^0-9]/g, '');
     const newPrice = parseInt(evt.target.value, 10) || 0;
     this._setState({ basePrice: newPrice });
   };
-
 
   static parsePointToState(point) {
     return { ...point };
