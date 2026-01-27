@@ -4,6 +4,7 @@ import PointsListView from '../view/points-list-view.js';
 import TripInfoView from '../view/trip-info-view.js';
 import NoPointView from '../view/no-point-view.js';
 import PointPresenter from './point-presenter.js';
+import LoadingView from '../view/loading-view.js';
 import NewPointPresenter from './new-point-presenter.js';
 import { sortByPrice, sortByTime } from '../utils/sort.js';
 import { SortType, UserAction, UpdateType, FilterType } from '../const.js';
@@ -27,9 +28,11 @@ export default class TripPresenter {
   #pointsListView = new PointsListView();
   #sortView = null;
   #tripInfoView = new TripInfoView();
+  #loadingComponent = new LoadingView();
   #noPointsView = null;
 
   #isCreating = false;
+  #isLoading = true;
 
   constructor({ tripEventsContainer, pointsModel, filterModel, tripInfoContainer }) {
     this.#mainContainer = tripEventsContainer;
@@ -122,6 +125,10 @@ export default class TripPresenter {
     if (updateType === UpdateType.MAJOR) {
       this.#currentSortType = SortType.DEFAULT;
     }
+    if (updateType === UpdateType.INIT) {
+      this.#isLoading = false;
+      remove(this.#loadingComponent);
+    }
 
     this.#tripPoints = this.points;
     this.#clearPointsList();
@@ -146,6 +153,11 @@ export default class TripPresenter {
 
   #renderApp() {
     this.#tripPoints = this.points;
+
+    if (this.#isLoading) {
+      this.#renderLoading();
+      return;
+    }
 
     if (this.#tripPoints.length === 0) {
       this.#renderNoPoints();
@@ -198,6 +210,10 @@ export default class TripPresenter {
     this.#pointPresenters.set(point.id, pointPresenter);
   }
 
+  #renderLoading() {
+    render(this.#loadingComponent, this.#mainContainer);
+  }
+
   #renderNoPoints() {
     remove(this.#noPointsView);
     this.#noPointsView = new NoPointView({ filterType: this.#filterModel.filter });
@@ -216,6 +232,7 @@ export default class TripPresenter {
       remove(this.#sortView);
       this.#sortView = null;
     }
+    remove(this.#loadingComponent);
   }
 
 }
