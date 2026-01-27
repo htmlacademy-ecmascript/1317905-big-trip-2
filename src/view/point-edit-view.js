@@ -6,7 +6,7 @@ import { POINTS_TYPES } from '../const.js';
 import flatpickr from 'flatpickr';
 
 import 'flatpickr/dist/flatpickr.min.css';
-// import rangePlugin from 'flatpickr/dist/plugins/rangePlugin';
+
 
 function createTypeListTemplate(type, currentType, id) {
   const isChecked = type === currentType ? 'checked' : '';

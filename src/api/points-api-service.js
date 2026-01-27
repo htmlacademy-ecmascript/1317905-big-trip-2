@@ -1,4 +1,4 @@
-import ApiService from './framework/api-service.js';
+import ApiService from '../framework/api-service.js';
 
 const Method = {
   GET: 'GET',

@@ -2,9 +2,9 @@ import TripPresenter from './presenter/trip-presenter.js';
 import FilterPresenter from './presenter/filter-presenter.js';
 import PointModel from './model/points-model.js';
 import FilterModel from './model/filter-model.js';
-import PointsApiService from './points-api-service.js';
-import DestinationsApiService from './destinations-api-service.js';
-import OffersApiService from './offers-api-service.js';
+import PointsApiService from './api/points-api-service.js';
+import DestinationsApiService from './api/destinations-api-service.js';
+import OffersApiService from './api/offers-api-service.js';
 
 const AUTHORIZATION = 'Basic hfgr4757583jsa';
 const END_POINT = 'https://22.objects.htmlacademy.pro/big-trip';

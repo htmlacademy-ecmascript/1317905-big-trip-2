@@ -5,6 +5,7 @@ import TripInfoView from '../view/trip-info-view.js';
 import NoPointView from '../view/no-point-view.js';
 import PointPresenter from './point-presenter.js';
 import LoadingView from '../view/loading-view.js';
+import LoadingErrorView from '../view/loading-error-view.js';
 import NewPointPresenter from './new-point-presenter.js';
 import { sortByPrice, sortByTime } from '../utils/sort.js';
 import { SortType, UserAction, UpdateType, FilterType } from '../const.js';
@@ -29,10 +30,12 @@ export default class TripPresenter {
   #sortView = null;
   #tripInfoView = new TripInfoView();
   #loadingComponent = new LoadingView();
+  #errorLoadingComponent = new LoadingErrorView();
   #noPointsView = null;
 
   #isCreating = false;
   #isLoading = true;
+  #isError = false;
 
   constructor({ tripEventsContainer, pointsModel, filterModel, tripInfoContainer }) {
     this.#mainContainer = tripEventsContainer;
@@ -122,12 +125,22 @@ export default class TripPresenter {
   };
 
   #handleModelEvent = (updateType) => {
-    if (updateType === UpdateType.MAJOR) {
-      this.#currentSortType = SortType.DEFAULT;
-    }
-    if (updateType === UpdateType.INIT) {
-      this.#isLoading = false;
-      remove(this.#loadingComponent);
+    switch (updateType) {
+      case UpdateType.MAJOR:
+        this.#currentSortType = SortType.DEFAULT;
+        break;
+
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        this.#isError = false;
+        remove(this.#loadingComponent);
+        remove(this.#errorLoadingComponent);
+        break;
+      case UpdateType.ERROR:
+        this.#isLoading = false;
+        this.#isError = true;
+        remove(this.#loadingComponent);
+        break;
     }
 
     this.#tripPoints = this.points;
@@ -158,6 +171,12 @@ export default class TripPresenter {
       this.#renderLoading();
       return;
     }
+
+    if (this.#isError) {
+      this.#renderError();
+      return;
+    }
+
 
     if (this.#tripPoints.length === 0) {
       this.#renderNoPoints();
@@ -213,6 +232,11 @@ export default class TripPresenter {
   #renderLoading() {
     render(this.#loadingComponent, this.#mainContainer);
   }
+
+  #renderError() {
+    render(this.#errorLoadingComponent, this.#mainContainer);
+  }
+
 
   #renderNoPoints() {
     remove(this.#noPointsView);
