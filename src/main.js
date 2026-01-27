@@ -38,6 +38,8 @@ const tripPresenter = new TripPresenter({
   tripInfoContainer
 });
 
+newEventButton.disabled = true;
+
 
 filterPresenter.init();
 tripPresenter.init();
@@ -45,9 +47,7 @@ pointsModel.init()
   .finally(() => {
     newEventButton.addEventListener('click', (evt) => {
       evt.preventDefault();
-      newEventButton.disabled = true;
       tripPresenter.createPoint();
     });
 
-    newEventButton.disabled = false;
   });

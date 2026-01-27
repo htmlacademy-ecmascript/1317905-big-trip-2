@@ -8,7 +8,7 @@ export default class PointPresenter {
 
   #point = null;
   #pointsModel = null;
-  #allDestinations = null;
+
 
   #pointComponent = null;
   #pointEditComponent = null;

@@ -305,7 +305,7 @@ export default class PointEditView extends AbstractStatefulView {
 
     if (startDate) {
       this._setState({
-        dateFrom: startDate.toISOString(),
+        dateFrom: startDate,
       });
 
       instance.element.value = instance.formatDate(startDate, 'd/m/y H:i');
@@ -314,7 +314,7 @@ export default class PointEditView extends AbstractStatefulView {
         const currentEnd = this._state.dateTo ? new Date(this._state.dateTo) : null;
         if (currentEnd && currentEnd < startDate) {
           this.#endPicker.setDate(startDate, true);
-          this._setState({ dateTo: startDate.toISOString() });
+          this._setState({ dateTo: startDate });
         }
       }
     }
@@ -326,7 +326,7 @@ export default class PointEditView extends AbstractStatefulView {
 
     if (endDate) {
       this._setState({
-        dateTo: endDate.toISOString(),
+        dateTo: endDate,
       });
       instance.element.value = instance.formatDate(endDate, 'd/m/y H:i');
     }

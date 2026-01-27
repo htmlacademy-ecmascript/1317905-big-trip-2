@@ -16,6 +16,7 @@ export default class TripPresenter {
   #filterModel = null;
   #mainContainer = null;
   #tripMainElement = null;
+  #newEventButton = null;
 
   #tripPoints = [];
   #allDestinations = [];
@@ -42,6 +43,7 @@ export default class TripPresenter {
     this.#pointsModel = pointsModel;
     this.#filterModel = filterModel;
     this.#tripMainElement = tripInfoContainer;
+    this.#newEventButton = document.querySelector('.trip-main__event-add-btn');
 
     this.#pointsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
@@ -84,6 +86,9 @@ export default class TripPresenter {
   }
 
   createPoint() {
+    if (this.#isError) {
+      return;
+    }
     this.#currentSortType = SortType.DEFAULT;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this.#handleModeChange();
@@ -93,12 +98,16 @@ export default class TripPresenter {
       render(this.#pointsListView, this.#mainContainer);
     }
     this.#isCreating = true;
+    if (this.#newEventButton) {
+      this.#newEventButton.disabled = true;
+    }
     this.#newPointPresenter.init();
   }
 
   #handleNewPointDestroy = () => {
-    const newEventButton = document.querySelector('.trip-main__event-add-btn');
-    newEventButton.disabled = false;
+    if (this.#newEventButton) {
+      this.#newEventButton.disabled = this.#isError;
+    }
     if (this.#isCreating && this.points.length === 0) {
       remove(this.#pointsListView);
       this.#renderNoPoints();
@@ -134,12 +143,17 @@ export default class TripPresenter {
         this.#isLoading = false;
         this.#isError = false;
         remove(this.#loadingComponent);
-        remove(this.#errorLoadingComponent);
+        if (this.#newEventButton) {
+          this.#newEventButton.disabled = false;
+        }
         break;
       case UpdateType.ERROR:
         this.#isLoading = false;
         this.#isError = true;
         remove(this.#loadingComponent);
+        if (this.#newEventButton) {
+          this.#newEventButton.disabled = true;
+        }
         break;
     }
 
@@ -235,6 +249,9 @@ export default class TripPresenter {
 
   #renderError() {
     render(this.#errorLoadingComponent, this.#mainContainer);
+    if (this.#newEventButton) {
+      this.#newEventButton.disabled = true;
+    }
   }
 
 
@@ -248,15 +265,13 @@ export default class TripPresenter {
     this.#pointPresenters.forEach((presenter) => presenter.destroy());
     this.#pointPresenters.clear();
 
-    if (this.#noPointsView) {
-      remove(this.#noPointsView);
-      this.#noPointsView = null;
-    }
-    if (this.#sortView) {
-      remove(this.#sortView);
-      this.#sortView = null;
-    }
+    remove(this.#noPointsView);
+    remove(this.#sortView);
     remove(this.#loadingComponent);
+    remove(this.#errorLoadingComponent);
+
+    this.#noPointsView = null;
+    this.#sortView = null;
   }
 
 }
