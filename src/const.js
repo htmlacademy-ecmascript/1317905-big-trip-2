@@ -76,4 +76,11 @@ const Method = {
   DELETE: 'DELETE',
 };
 
-export {AUTHORIZATION, END_POINT, POINTS_TYPES, EMPTY_POINT, FilterType, Mode, SortType, SORT_ITEMS, DATE_FORMATS, UserAction, UpdateType, TimeLimit, Method };
+const ApiRoute = {
+  POINTS: 'points',
+  DESTINATIONS: 'destinations',
+  OFFERS: 'offers'
+};
+
+
+export {AUTHORIZATION, END_POINT, POINTS_TYPES, EMPTY_POINT, FilterType, Mode, SortType, SORT_ITEMS, DATE_FORMATS, UserAction, UpdateType, TimeLimit, Method, ApiRoute };
