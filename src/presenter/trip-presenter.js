@@ -9,13 +9,8 @@ import LoadingView from '../view/loading-view.js';
 import LoadingErrorView from '../view/loading-error-view.js';
 import NewPointPresenter from './new-point-presenter.js';
 import { sortByPrice, sortByTime } from '../utils/sort.js';
-import { SortType, UserAction, UpdateType, FilterType } from '../const.js';
+import { SortType, UserAction, UpdateType, FilterType, TimeLimit } from '../const.js';
 import { filter } from '../utils/filter.js';
-
-const TimeLimit = {
-  LOWER_LIMIT: 350,
-  UPPER_LIMIT: 1000,
-};
 
 export default class TripPresenter {
   #pointsModel = null;

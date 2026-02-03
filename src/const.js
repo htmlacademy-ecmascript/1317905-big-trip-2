@@ -1,5 +1,5 @@
-const now = new Date();
-now.setSeconds(0, 0);
+const AUTHORIZATION = 'Basic hfgr4757583jsa';
+const END_POINT = 'https://22.objects.htmlacademy.pro/big-trip';
 
 const EMPTY_POINT = {
   basePrice: 0,
@@ -64,4 +64,10 @@ const UpdateType = {
   ERROR: 'ERROR'
 };
 
-export {POINTS_TYPES, EMPTY_POINT, FilterType, Mode, SortType, SORT_ITEMS, DATE_FORMATS, UserAction, UpdateType };
+const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000,
+};
+
+
+export {AUTHORIZATION, END_POINT, POINTS_TYPES, EMPTY_POINT, FilterType, Mode, SortType, SORT_ITEMS, DATE_FORMATS, UserAction, UpdateType, TimeLimit };
