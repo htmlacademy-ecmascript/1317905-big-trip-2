@@ -106,7 +106,7 @@ function createPointEditViewTemplate(state, offers, selectedOffers, currentDesti
   const destinationTemplate = createDestinationTemplate(currentDestination);
   const rollupButton = createOpenedButtonTemplate(state);
 
-  const isEdit = !id ? 'Cancel' : 'Delete';
+  const isEdit = state.id ? 'Delete' : 'Cancel';
 
   return `
     <li class="trip-events__item">
@@ -153,8 +153,15 @@ function createPointEditViewTemplate(state, offers, selectedOffers, currentDesti
             <input class="event__input  event__input--price" id="event-price-${id}" type="text" name="event-price" value="${basePrice}">
           </div>
 
-          <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-          <button class="event__reset-btn" type="reset">${isEdit}</button>
+        <button class="event__save-btn btn btn--blue" type="submit"
+  ${state.isDisabled || state.isSaving ? 'disabled' : ''}>
+  ${state.isSaving ? 'Saving...' : 'Save'}
+</button>
+
+<button class="event__reset-btn" type="reset"
+  ${state.isDisabled || state.isDeleting ? 'disabled' : ''}>
+  ${state.isDeleting ? 'Deleting...' : isEdit}
+</button>
           ${rollupButton}
         </header>
         <section class="event__details">
@@ -368,10 +375,21 @@ export default class PointEditView extends AbstractStatefulView {
   };
 
   static parsePointToState(point) {
-    return { ...point };
+    return { ...point,
+      isDisabled: false,
+      isSaving: false,
+      isDeleting: false,
+    };
   }
 
   static parseStateToPoint(state) {
-    return { ...state };
+    const point = {...state};
+
+    delete point.isDisabled;
+    delete point.isSaving;
+    delete point.isDeleting;
+
+    return point;
+
   }
 }
