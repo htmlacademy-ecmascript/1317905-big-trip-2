@@ -1,8 +1,7 @@
-import { render, RenderPosition, remove, replace } from '../framework/render.js';
+import { render, remove, replace } from '../framework/render.js';
 import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 import SortView from '../view/sort-view.js';
 import PointsListView from '../view/points-list-view.js';
-import TripInfoView from '../view/trip-info-view.js';
 import NoPointView from '../view/no-point-view.js';
 import PointPresenter from './point-presenter.js';
 import LoadingView from '../view/loading-view.js';
@@ -16,7 +15,6 @@ export default class TripPresenter {
   #pointsModel = null;
   #filterModel = null;
   #mainContainer = null;
-  #tripMainElement = null;
   #newEventButton = null;
 
   #tripPoints = [];
@@ -30,7 +28,6 @@ export default class TripPresenter {
 
   #pointsListView = new PointsListView();
   #sortView = null;
-  #tripInfoView = new TripInfoView();
   #loadingComponent = new LoadingView();
   #errorLoadingComponent = new LoadingErrorView();
   #noPointsView = null;
@@ -44,11 +41,10 @@ export default class TripPresenter {
     upperLimit: TimeLimit.UPPER_LIMIT
   });
 
-  constructor({ tripEventsContainer, pointsModel, filterModel, tripInfoContainer }) {
+  constructor({ tripEventsContainer, pointsModel, filterModel }) {
     this.#mainContainer = tripEventsContainer;
     this.#pointsModel = pointsModel;
     this.#filterModel = filterModel;
-    this.#tripMainElement = tripInfoContainer;
     this.#newEventButton = document.querySelector('.trip-main__event-add-btn');
 
     this.#pointsModel.addObserver(this.#handleModelEvent);
@@ -223,15 +219,11 @@ export default class TripPresenter {
       return;
     }
 
-    this.#renderInfo();
     this.#renderSort();
     this.#renderPointsList();
     this.#renderPoints();
   }
 
-  #renderInfo() {
-    render(this.#tripInfoView, this.#tripMainElement, RenderPosition.AFTERBEGIN);
-  }
 
   #renderSort() {
     const newSortView = new SortView({

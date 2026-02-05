@@ -46,7 +46,8 @@ const DATE_FORMATS = {
   attributeDate: 'YYYY-MM-DD',
   taskTime: 'HH:mm',
   fullDate: 'DD/MM/YY HH:mm',
-  attributeFullDate: 'YYYY-MM-DDTHH:mm'
+  attributeFullDate: 'YYYY-MM-DDTHH:mm',
+  tripInfoDate: 'D MMM',
 };
 
 const UserAction = {

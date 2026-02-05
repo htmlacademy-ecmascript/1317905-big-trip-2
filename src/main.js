@@ -1,5 +1,6 @@
 import TripPresenter from './presenter/trip-presenter.js';
 import FilterPresenter from './presenter/filter-presenter.js';
+import TripInfoPresenter from './presenter/trip-info-presenter.js';
 import PointModel from './model/points-model.js';
 import FilterModel from './model/filter-model.js';
 import PointsApiService from './api/points-api-service.js';
@@ -23,6 +24,12 @@ const pointsModel = new PointModel({
   offersApiService,
 });
 
+
+const tripInfoPresenter = new TripInfoPresenter({
+  tripInfoContainer,
+  pointsModel,
+});
+
 const filterModel = new FilterModel();
 const filterPresenter = new FilterPresenter({
   filterContainer: filtersContainer,
@@ -41,6 +48,7 @@ newEventButton.disabled = true;
 
 filterPresenter.init();
 tripPresenter.init();
+tripInfoPresenter.init();
 pointsModel.init()
   .finally(() => {
     newEventButton.addEventListener('click', (evt) => {
