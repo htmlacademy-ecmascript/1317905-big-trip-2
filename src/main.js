@@ -25,12 +25,14 @@ const pointsModel = new PointModel({
 });
 
 
+const filterModel = new FilterModel();
+
 const tripInfoPresenter = new TripInfoPresenter({
   tripInfoContainer,
   pointsModel,
+  filterModel
 });
 
-const filterModel = new FilterModel();
 const filterPresenter = new FilterPresenter({
   filterContainer: filtersContainer,
   filterModel,
