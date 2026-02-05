@@ -31,7 +31,7 @@ const getRouteTitle = (points, destinations) => {
     return cityNames.join(' — ');
   }
 
-  return `${cityNames[0]}  …  ${cityNames[cityNames.length - 1]}`;
+  return `${cityNames[0]} — … — ${cityNames[cityNames.length - 1]}`;
 };
 
 
