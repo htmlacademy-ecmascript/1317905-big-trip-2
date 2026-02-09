@@ -76,34 +76,52 @@ export default class TripPresenter {
     this.#handleModelEvent();
   }
 
+  #createNewPointPresenter() {
+    this.#newPointPresenter = new NewPointPresenter({
+      pointListContainer: this.#pointsListView.element,
+      allDestinations: this.#allDestinations,
+      offers: this.#allOffers,
+      onDataChange: this.#handleViewAction,
+      onDestroy: this.#handleNewPointDestroy
+    });
+  }
+
   createPoint() {
-    if (this.#isError) {
+    if (this.#isError || this.#isCreating) {
       return;
     }
+
+    this.#isCreating = true;
+    if (this.#newEventButton) {
+      this.#newEventButton.disabled = true;
+    }
+
+    this.#createNewPointPresenter();
+
+    remove(this.#loadingComponent);
+
     this.#currentSortType = SortType.DEFAULT;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this.#handleModeChange();
+
     if (this.#tripPoints.length === 0) {
       remove(this.#noPointsView);
       this.#noPointsView = null;
       render(this.#pointsListView, this.#mainContainer);
     }
-    this.#isCreating = true;
-    if (this.#newEventButton) {
-      this.#newEventButton.disabled = true;
-    }
+
     this.#newPointPresenter.init();
   }
 
   #handleNewPointDestroy = () => {
+    this.#isCreating = false;
     if (this.#newEventButton) {
       this.#newEventButton.disabled = this.#isError;
     }
-    if (this.#isCreating && this.points.length === 0) {
+    if (this.points.length === 0) {
       remove(this.#pointsListView);
       this.#renderNoPoints();
     }
-    this.#isCreating = false;
   };
 
   #handleViewAction = async (actionType, updateType, update) => {
@@ -114,7 +132,7 @@ export default class TripPresenter {
         this.#pointPresenters.get(update.id).setSaving();
         try {
           await this.#pointsModel.updatePoint(updateType, update);
-        } catch(err) {
+        } catch (err) {
           this.#pointPresenters.get(update.id).setAborting();
         }
         break;
@@ -127,7 +145,7 @@ export default class TripPresenter {
           if (this.#newEventButton) {
             this.#newEventButton.disabled = false;
           }
-        } catch(err) {
+        } catch (err) {
           this.#newPointPresenter.setAborting();
         }
         break;
@@ -135,13 +153,13 @@ export default class TripPresenter {
         this.#pointPresenters.get(update.id).setDeleting();
         try {
           await this.#pointsModel.deletePoint(updateType, update);
-        } catch(err) {
+        } catch (err) {
           this.#pointPresenters.get(update.id).setAborting();
         }
         break;
     }
-    this.#uiBlocker.unblock();
 
+    this.#uiBlocker.unblock();
   };
 
   #handleModelEvent = (updateType) => {
@@ -157,18 +175,12 @@ export default class TripPresenter {
         this.#allDestinations = [...this.#pointsModel.destinations];
         this.#allOffers = this.#pointsModel.offers;
 
-        this.#newPointPresenter = new NewPointPresenter({
-          pointListContainer: this.#pointsListView.element,
-          allDestinations: this.#allDestinations,
-          offers: this.#allOffers,
-          onDataChange: this.#handleViewAction,
-          onDestroy: this.#handleNewPointDestroy
-        });
         remove(this.#loadingComponent);
         if (this.#newEventButton) {
           this.#newEventButton.disabled = false;
         }
         break;
+
       case UpdateType.ERROR:
         this.#isLoading = false;
         this.#isError = true;
@@ -185,7 +197,9 @@ export default class TripPresenter {
   };
 
   #handleModeChange = () => {
-    this.#newPointPresenter.destroy();
+    if (this.#newPointPresenter) {
+      this.#newPointPresenter.destroy();
+    }
     this.#pointPresenters.forEach((presenter) => presenter.resetView());
   };
 
@@ -213,7 +227,6 @@ export default class TripPresenter {
       return;
     }
 
-
     if (this.#tripPoints.length === 0) {
       this.#renderNoPoints();
       return;
@@ -223,7 +236,6 @@ export default class TripPresenter {
     this.#renderPointsList();
     this.#renderPoints();
   }
-
 
   #renderSort() {
     const newSortView = new SortView({
@@ -272,7 +284,6 @@ export default class TripPresenter {
     }
   }
 
-
   #renderNoPoints() {
     remove(this.#noPointsView);
     this.#noPointsView = new NoPointView({ filterType: this.#filterModel.filter });
@@ -291,5 +302,4 @@ export default class TripPresenter {
     this.#noPointsView = null;
     this.#sortView = null;
   }
-
 }

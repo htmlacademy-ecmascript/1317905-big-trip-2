@@ -13,12 +13,10 @@ const getRouteTitle = (points, destinations) => {
   const sortedPoints = [...points].sort((a, b) => new Date(a.dateFrom) - new Date(b.dateFrom));
 
   const cityNames = [];
-  const seen = new Set();
 
   sortedPoints.forEach((point) => {
     const dest = destinations.find((d) => d.id === point.destination);
-    if (dest?.name && !seen.has(dest.name)) {
-      seen.add(dest.name);
+    if (dest?.name) {
       cityNames.push(dest.name);
     }
   });
