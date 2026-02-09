@@ -3,8 +3,8 @@ const END_POINT = 'https://22.objects.htmlacademy.pro/big-trip';
 
 const EMPTY_POINT = {
   basePrice: 0,
-  dateFrom: new Date(),
-  dateTo: new Date(),
+  dateFrom: '',
+  dateTo: '',
   destination: '',
   isFavorite: false,
   offers: [],

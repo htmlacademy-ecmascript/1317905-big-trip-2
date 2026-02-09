@@ -29,8 +29,7 @@ const filterModel = new FilterModel();
 
 const tripInfoPresenter = new TripInfoPresenter({
   tripInfoContainer,
-  pointsModel,
-  filterModel
+  pointsModel
 });
 
 const filterPresenter = new FilterPresenter({
@@ -45,14 +44,13 @@ const tripPresenter = new TripPresenter({
   tripInfoContainer
 });
 
-newEventButton.disabled = true;
-
 
 filterPresenter.init();
 tripPresenter.init();
 tripInfoPresenter.init();
 pointsModel.init()
   .finally(() => {
+
     newEventButton.addEventListener('click', (evt) => {
       evt.preventDefault();
       tripPresenter.createPoint();

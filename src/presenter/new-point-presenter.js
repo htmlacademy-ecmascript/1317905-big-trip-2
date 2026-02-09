@@ -55,7 +55,13 @@ export default class NewPointPresenter {
   }
 
   setAborting() {
+    if (!this.#pointEditComponent) {
+      return;
+    }
     const resetFormState = () => {
+      if (!this.#pointEditComponent) {
+        return;
+      }
       this.#pointEditComponent.updateElement({
         isDisabled: false,
         isSaving: false,

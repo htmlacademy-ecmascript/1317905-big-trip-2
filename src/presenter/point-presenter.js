@@ -1,14 +1,12 @@
-import { render, replace, remove} from '../framework/render.js';
+import { render, replace, remove } from '../framework/render.js';
 import PointView from '../view/point-view.js';
 import PointEditView from '../view/point-edit-view.js';
 import { Mode, UserAction, UpdateType } from '../const.js';
 
 export default class PointPresenter {
   #pointListContainer = null;
-
   #point = null;
   #pointsModel = null;
-
 
   #pointComponent = null;
   #pointEditComponent = null;
@@ -17,14 +15,14 @@ export default class PointPresenter {
   #handleModeChange = null;
 
   #mode = Mode.DEFAULT;
+  #escListenerAdded = false;
 
-  constructor({pointListContainer, pointsModel, onDataChange, onModeChange}) {
+  constructor({ pointListContainer, pointsModel, onDataChange, onModeChange }) {
     this.#pointListContainer = pointListContainer;
     this.#pointsModel = pointsModel;
     this.#handleDataChange = onDataChange;
     this.#handleModeChange = onModeChange;
   }
-
 
   init(point) {
     this.#point = point;
@@ -49,7 +47,7 @@ export default class PointPresenter {
       onDeleteClick: this.#deleteButtonClick
     });
 
-    if (prevPointComponent === null || prevPointEditComponent === null) {
+    if (prevPointComponent === null && prevPointEditComponent === null) {
       render(this.#pointComponent, this.#pointListContainer);
       return;
     }
@@ -61,6 +59,7 @@ export default class PointPresenter {
     if (this.#mode === Mode.EDITING) {
       replace(this.#pointComponent, prevPointEditComponent);
       this.#mode = Mode.DEFAULT;
+      this.#removeEscListener();
     }
 
     remove(prevPointComponent);
@@ -68,12 +67,15 @@ export default class PointPresenter {
   }
 
   destroy() {
+    this.#removeEscListener();
     remove(this.#pointComponent);
     remove(this.#pointEditComponent);
+    this.#pointComponent = null;
+    this.#pointEditComponent = null;
   }
 
   resetView() {
-    if (this.#mode !== Mode.DEFAULT) {
+    if (this.#mode === Mode.EDITING) {
       this.#pointEditComponent.reset(this.#point);
       this.#replaceFormToPoint();
     }
@@ -98,12 +100,10 @@ export default class PointPresenter {
   }
 
   setAborting() {
-    if (this.#mode === Mode.DEFAULT) {
-      this.#pointComponent.shake();
-      return;
-    }
-
     const resetFormState = () => {
+      if (!this.#pointEditComponent) {
+        return;
+      }
       this.#pointEditComponent.updateElement({
         isDisabled: false,
         isSaving: false,
@@ -111,27 +111,46 @@ export default class PointPresenter {
       });
     };
 
-    this.#pointEditComponent.shake(resetFormState);
+    if (this.#mode === Mode.DEFAULT) {
+      this.#pointComponent?.shake?.();
+      return;
+    }
+
+    this.#pointEditComponent?.shake?.(resetFormState);
   }
 
   #replacePointToForm() {
     replace(this.#pointEditComponent, this.#pointComponent);
-    document.addEventListener('keydown', this.#escKeyDownHandler);
+
+    if (!this.#escListenerAdded) {
+      document.addEventListener('keydown', this.#escKeyDownHandler);
+      this.#escListenerAdded = true;
+    }
+
     this.#handleModeChange();
     this.#mode = Mode.EDITING;
   }
 
   #replaceFormToPoint() {
     replace(this.#pointComponent, this.#pointEditComponent);
-    document.removeEventListener('keydown', this.#escKeyDownHandler);
+    this.#removeEscListener();
     this.#mode = Mode.DEFAULT;
+  }
+
+  #removeEscListener() {
+    if (this.#escListenerAdded) {
+      document.removeEventListener('keydown', this.#escKeyDownHandler);
+      this.#escListenerAdded = false;
+    }
   }
 
   #escKeyDownHandler = (evt) => {
     if (evt.key === 'Escape') {
-      evt.preventDefault();
-      this.#pointEditComponent.reset(this.#point);
-      this.#replaceFormToPoint();
+      if (!evt.defaultPrevented) {
+        evt.preventDefault();
+        this.#pointEditComponent.reset(this.#point);
+        this.#replaceFormToPoint();
+      }
     }
   };
 
@@ -143,7 +162,7 @@ export default class PointPresenter {
     this.#handleDataChange(
       UserAction.UPDATE_POINT,
       UpdateType.MINOR,
-      {...this.#point, isFavorite: !this.#point.isFavorite},
+      { ...this.#point, isFavorite: !this.#point.isFavorite },
     );
   };
 
