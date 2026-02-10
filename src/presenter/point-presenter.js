@@ -82,6 +82,9 @@ export default class PointPresenter {
   }
 
   setSaving() {
+    if (!this.#pointEditComponent || !this.#pointEditComponent.element) {
+      return;
+    }
     if (this.#mode === Mode.EDITING) {
       this.#pointEditComponent.updateElement({
         isDisabled: true,
@@ -91,6 +94,9 @@ export default class PointPresenter {
   }
 
   setDeleting() {
+    if (!this.#pointEditComponent || !this.#pointEditComponent.element) {
+      return;
+    }
     if (this.#mode === Mode.EDITING) {
       this.#pointEditComponent.updateElement({
         isDisabled: true,
@@ -100,10 +106,19 @@ export default class PointPresenter {
   }
 
   setAborting() {
+    if (!this.#pointEditComponent || !this.#pointEditComponent.element) {
+      return;
+    }
+
     const resetFormState = () => {
-      if (!this.#pointEditComponent) {
+      if (
+        !this.#pointEditComponent ||
+      !this.#pointEditComponent.element ||
+      !document.body.contains(this.#pointEditComponent.element)
+      ) {
         return;
       }
+
       this.#pointEditComponent.updateElement({
         isDisabled: false,
         isSaving: false,
@@ -116,8 +131,12 @@ export default class PointPresenter {
       return;
     }
 
-    this.#pointEditComponent?.shake?.(resetFormState);
+
+    if (this.#pointEditComponent.element) {
+      this.#pointEditComponent.shake(resetFormState);
+    }
   }
+
 
   #replacePointToForm() {
     replace(this.#pointEditComponent, this.#pointComponent);

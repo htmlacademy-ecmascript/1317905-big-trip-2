@@ -210,6 +210,9 @@ export default class PointEditView extends AbstractStatefulView {
   }
 
   reset(point) {
+    if (!this.element) {
+      return;
+    }
     this.updateElement(
       PointEditView.parsePointToState(point),
     );
